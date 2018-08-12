@@ -168,7 +168,7 @@ def socket_client():
 
 if __name__ == '__main__':
 	print("Begin process")
-	display_image("/home/nav/Documents/led_matrix/led_socket_client/emoji.png")
+	display_image("emoji.png")
 	#Process(target=socket_thread).start()
 	#Process(target=post_thread).start()
 	#Process(target=RGB_thread).start()
