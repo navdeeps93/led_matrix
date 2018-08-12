@@ -7,6 +7,9 @@ import ast
 from multiprocessing import Process, Value, Array
 
 
+#custom imports
+#need to add __init__.py to all sub directories
+from rgb_examples.image_viewer import *
 
 
 
@@ -38,7 +41,7 @@ def socket_thread():
 
 	#Create ipv4 TCP socket 
 	print ("Creating Socket")
-	client_socket = socket.socket(socket.AF_INET, .socketSOCK_STREAM)
+	client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
 	#connect to a server
@@ -164,7 +167,9 @@ def socket_client():
 
 
 if __name__ == '__main__':
-	Process(target=socket_thread).start()
+	print("Begin process")
+	display_image("/home/nav/Documents/led_matrix/led_socket_client/emoji.png")
+	#Process(target=socket_thread).start()
 	#Process(target=post_thread).start()
 	#Process(target=RGB_thread).start()
 
@@ -176,7 +181,17 @@ if __name__ == '__main__':
 
 #64 is col (x axis)
 #32 is row (y axis)
-provision(get_mac().rstrip(), "64", "32") #first boot
+
+
+
+
+
+#provision(get_mac().rstrip(), "64", "32") #first boot
+
+
+
+
+
 
 #refresh for latest image from server
 
