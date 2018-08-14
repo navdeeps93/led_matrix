@@ -13,6 +13,7 @@ from colors import rgb, hex
 from rgb_examples.image_viewer import *
 
 
+global shared_rgb
 
 
 def provision(mac,  width, height):
