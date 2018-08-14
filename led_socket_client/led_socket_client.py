@@ -6,7 +6,7 @@ import requests
 import ast
 from multiprocessing import Process, Value, Array
 import random
-
+from colors import rgb, hex
 
 #custom imports
 #need to add __init__.py to all sub directories
@@ -46,7 +46,7 @@ def socket_thread():
 
 
 	#connect to a server
-	while True:	
+	while True:
 		try:
 			client_socket.connect(SERVER_PORT)
 			break
@@ -99,8 +99,25 @@ def post_thread():
 
 def RGB_thread():
 	print("In RGB_Thread")
-	While
-	#not yet :^(
+	screen_init()
+
+	while True:
+		print("Shared RGB Array: ", shared_rgb)
+		count = len(shared_rgb)
+		if (count < 3):
+			print("not enough commas")
+		else:
+			hex_color = shared_rgb[2]
+			print("Hex Color: ", hex_color)
+			rgb_tuple = tuple(hex(hex_color).rgb)
+			if (rgb_tuple.count() == 1):
+				set_pixel(x,y,rgb_tuple[0],rgb_tuple[1],brgb_tuple[2])
+				#clear array, need to watch out if other thread can be fucked by this
+				shared_rgb = []
+			else:
+				print("Tuple count is not righ!")
+
+
 
 
 
@@ -169,26 +186,38 @@ def socket_client():
 
 if __name__ == '__main__':
 	print("Begin process")
+	Process(target=socket_thread).start()
+	
+
+	#Process(target=post_thread).start()
+	print("Wait for a bit, thens tart RGB Thread")
+	time.sleep(5)
+	Process(target=RGB_thread).start()
+
+
+
+
 	#display_image("emoji.png")
-	screen_init()
-	r = 0
-	g = 0
-	b = 0
-	while(True):
+	
+
+	# r = 0
+	# g = 0
+	# b = 0
+	# while(True):
                 
-		x = random.randint(0, 64)
-		y = random.randint(0,32)
-		set_pixel(x,y,r,g,b)
-		time.sleep(0.01)
-		if (r >= 255 - 6):
-			r = 0
-		if (b >= 255 - 4):
-			b = 0
-		if (g >= 255 - 3):
-			g = 0
-		r = r + 5
-		g = g + 2
-		b = b + 3
+	# 	x = random.randint(0, 64)
+	# 	y = random.randint(0,32)
+	# 	set_pixel(x,y,r,g,b)
+	# 	time.sleep(0.01)
+	# 	if (r >= 255 - 6):
+	# 		r = 0
+	# 	if (b >= 255 - 4):
+	# 		b = 0
+	# 	if (g >= 255 - 3):
+	# 		g = 0
+	# 	r = r + 5
+	# 	g = g + 2
+	# 	b = b + 3
 	#Process(target=socket_thread).start()
 	#Process(target=post_thread).start()
 	#Process(target=RGB_thread).start()
