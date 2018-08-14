@@ -6,6 +6,27 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image
 
 
+
+global options
+
+def screen_init():
+        # Configuration for the matrix
+	options = RGBMatrixOptions()
+	options.rows = 32
+	options.cols = 64
+	options.chain_length = 1
+	options.parallel = 1
+	options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafruit-hat'
+	options.brightness = 30
+	options.show_refresh_rate=1
+	global matrix
+	matrix = RGBMatrix(options = options)
+
+def set_pixel(x, y, r, g, b):
+        matrix.SetPixel(x, y, r, g, b)
+
+
+
 def display_image(image_file):
 	print("hi")
 	image = Image.open(image_file)
@@ -17,7 +38,8 @@ def display_image(image_file):
 	options.chain_length = 1
 	options.parallel = 1
 	options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafruit-hat'
-
+	options.brightness = 30
+	options.show_refresh_rate=1
 	matrix = RGBMatrix(options = options)
 
 	# Make image fit our screen.

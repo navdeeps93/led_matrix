@@ -5,6 +5,7 @@ import time
 import requests
 import ast
 from multiprocessing import Process, Value, Array
+import random
 
 
 #custom imports
@@ -168,7 +169,26 @@ def socket_client():
 
 if __name__ == '__main__':
 	print("Begin process")
-	display_image("emoji.png")
+	#display_image("emoji.png")
+	screen_init()
+	r = 0
+	g = 0
+	b = 0
+	while(True):
+                
+		x = random.randint(0, 64)
+		y = random.randint(0,32)
+		set_pixel(x,y,r,g,b)
+		time.sleep(0.01)
+		if (r >= 255 - 6):
+			r = 0
+		if (b >= 255 - 4):
+			b = 0
+		if (g >= 255 - 3):
+			g = 0
+		r = r + 5
+		g = g + 2
+		b = b + 3
 	#Process(target=socket_thread).start()
 	#Process(target=post_thread).start()
 	#Process(target=RGB_thread).start()
