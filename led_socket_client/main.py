@@ -44,18 +44,15 @@ def provision(mac,  width, height):
 
 
 	#Write content to file
-	write_to_file(UBUNTU_PATH, id_hash["key"])
+	write_to_file(PI_PATH, id_hash)
 
 
 	#display key on screen
 	print("Displaying key on screen")
 	screen_init()
-	display_text(id_hash["id"])
-
-
-
-
-
+	
+	#loop here until we recieve ok from server, or make a thread that i can kill whenever
+	display_text(str(id_hash["key"]))
 
 
 
