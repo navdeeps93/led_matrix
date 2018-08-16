@@ -10,6 +10,7 @@ from multiprocessing import Process, Value, Array
 #Imports from files
 from led_display import *
 from file_io import *
+from websocket import *
 
 UBUNTU_PATH = "/home/nav/Documents/led_matrix/led_socket_client/id.conf"
 PI_PATH = "/home/pi/Documents/led_matrix/led_socket_client/id.conf"
@@ -49,10 +50,10 @@ def provision(mac,  width, height):
 
 	#display key on screen
 	print("Displaying key on screen")
-	screen_init()
+	#screen_init()
 	
 	#loop here until we recieve ok from server, or make a thread that i can kill whenever
-	display_text(str(id_hash["key"]))
+	#display_text(str(id_hash["key"]))
 
 
 
@@ -63,5 +64,5 @@ if __name__ == '__main__':
 	provision(get_mac().rstrip(), "1", "1") #first boot
 
 
-
 	#Start Websocket
+	Process(target=ws_client).start()
