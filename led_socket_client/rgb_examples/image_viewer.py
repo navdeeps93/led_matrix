@@ -23,7 +23,10 @@ def screen_init():
 	matrix = RGBMatrix(options = options)
 
 def set_pixel(x, y, r, g, b):
-        matrix.SetPixel(x, y, r, g, b)
+	print("In set_piexel")
+	print("X coord: ", x)
+	print("Y Coord: ", y)
+	matrix.SetPixel(x, y, 100, 144, 255)
 
 
 

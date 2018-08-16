@@ -12,9 +12,8 @@ from colors import rgb, hex
 #need to add __init__.py to all sub directories
 from rgb_examples.image_viewer import *
 
-
-global shared_rgb
-
+shared_rgb = []
+socket_connected = 0
 
 def provision(mac,  width, height):
 	URL = "https://grid-draw.herokuapp.com/grids"
@@ -28,38 +27,51 @@ def provision(mac,  width, height):
 	print ("What he say back: ", post_data.content)
 	
 	#Write content to file
-	write_to_file("/Users/navdeep/Desktop/led_socket_client/id.conf", post_data.content.decode("utf-8"))
+	write_to_file("/home/pi/Documents/led_matrix/led_socket_client/id.conf", post_data.content.decode("utf-8"))
 
 
 	#read id file into hash
-	id_hash_string = open("/Users/navdeep/Desktop/led_socket_client/id.conf").read()
-	id_hash = ast.literal_eval(id_hash_string)
+	#id_hash_string = open("/home/pi/Documents/led_matrix/led_socket_client/id.conf").read()
+	#id_hash = ast.literal_eval(id_hash_string)
 
-	print("Here is the Hash: ", id_hash.items())
+	#print("Here is the Hash: ", id_hash.items())
 
 
 def socket_thread():
-	SERVER_PORT = ('0.0.0.0', 21)
+	global shared_rgb
+	screen_init()
+	SERVER_PORT = ('173.255.221.187', 3333)
 
 	#Create ipv4 TCP socket 
 	print ("Creating Socket")
 	client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+	global socket_connected
+	socket_connected = 1
 
 	#connect to a server
 	while True:
 		try:
 			client_socket.connect(SERVER_PORT)
+			print("Does this line run")
 			break
 		except (TypeError, ValueError, OverflowError):
 			print("Failed to connect trying again...")
 			time.sleep(1)
 
 	print("Connected to Server...")
-
+	#Send device id
+	#read id file into hash
+	id_hash_string = open("/home/pi/Documents/led_matrix/led_socket_client/id.conf").read()
+	id_hash = ast.literal_eval(id_hash_string)
+	print("Here is the Hash: ", id_hash.items())
+	just_id = id_hash["id"]
+	device_id_string = 'device_id:' + str(just_id)
+	print("Here is device_id_string: ", device_id_string)
+	client_socket.sendall(device_id_string.encode())
 	#Time for the infinite loop
 	while True:
 		try:
+			print("Waiting for recv data")
 			recv_data = client_socket.recv(1024)
 			print("Received RGB data: ", recv_data)
 
@@ -71,14 +83,19 @@ def socket_thread():
 				print("Recv Data is RGB Data: ", format_recv_data)
 				rgb_array = format_recv_data.split(",")
 				print("Rgb array: ", rgb_array)
-				shared_rgb = Array(format_recv_data.split(","))
-				print("Shared_RGB array: ", shared_rgb)
-				time.sleep(1)
-
-			#Write rgb data to buffer
+				count = len(rgb_array)
+				if (count < 3):
+					print("not enough commas")
+				else:
+					x = int(rgb_array[0])
+					y = int(rgb_array[1])
+					hex_color = rgb_array[2]
+					print("X coord: ", x)
+					print("Y Coord: ", y)
+					set_pixel(x,y,0,0,255)
+					rgb_array = []
 		except (TypeError, ValueError, OverflowError):
 			print("Failed to recv shit?")
-			time.sleep(1)
 
 
 
@@ -99,6 +116,7 @@ def post_thread():
 
 
 def RGB_thread():
+	global shared_rgb
 	print("In RGB_Thread")
 	screen_init()
 
@@ -108,8 +126,13 @@ def RGB_thread():
 		if (count < 3):
 			print("not enough commas")
 		else:
+			x = shared_rgb[0]
+			y = shared_rgb[1]
 			hex_color = shared_rgb[2]
+			print("X coord: ", x)
+			print("Y Coord: ", y)
 			print("Hex Color: ", hex_color)
+			time.sleep(7)
 			rgb_tuple = tuple(hex(hex_color).rgb)
 			if (rgb_tuple.count() == 1):
 				set_pixel(x,y,rgb_tuple[0],rgb_tuple[1],brgb_tuple[2])
@@ -124,7 +147,7 @@ def RGB_thread():
 
 
 
-def get_mac(interface = 'enp0s3'):
+def get_mac(interface = 'eth0'):
 	#Returns mac address of 'interface'
 	try:
 		mac = open("/sys/class/net/%s/address" %interface).read()
@@ -186,39 +209,24 @@ def socket_client():
 
 
 if __name__ == '__main__':
+	global socket_connected
+	socket_connected = 0
+	provision(get_mac().rstrip(), "64", "32") #first boot
 	print("Begin process")
+	#screen_init() #TODO: remove this
 	Process(target=socket_thread).start()
 	
-
+	time.sleep(5)
 	#Process(target=post_thread).start()
 	print("Wait for a bit, thens tart RGB Thread")
 	time.sleep(5)
-	Process(target=RGB_thread).start()
+	#Process(target=RGB_thread).start()
 
 
 
 
 	#display_image("emoji.png")
 	
-
-	# r = 0
-	# g = 0
-	# b = 0
-	# while(True):
-                
-	# 	x = random.randint(0, 64)
-	# 	y = random.randint(0,32)
-	# 	set_pixel(x,y,r,g,b)
-	# 	time.sleep(0.01)
-	# 	if (r >= 255 - 6):
-	# 		r = 0
-	# 	if (b >= 255 - 4):
-	# 		b = 0
-	# 	if (g >= 255 - 3):
-	# 		g = 0
-	# 	r = r + 5
-	# 	g = g + 2
-	# 	b = b + 3
 	#Process(target=socket_thread).start()
 	#Process(target=post_thread).start()
 	#Process(target=RGB_thread).start()
