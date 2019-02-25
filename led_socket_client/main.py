@@ -10,7 +10,7 @@ from multiprocessing import Process, Value, Array
 #Imports from files
 from led_display import *
 from file_io import *
-from websocket import *
+from websocket_client import *
 
 UBUNTU_PATH = "/home/nav/Documents/led_matrix/led_socket_client/id.conf"
 PI_PATH = "/home/pi/Documents/led_matrix/led_socket_client/id.conf"
@@ -61,8 +61,8 @@ if __name__ == '__main__':
 
 	print("Begin Main")
 	#Startup Routine
-	provision(get_mac().rstrip(), "1", "1") #first boot
+	provision(get_mac().rstrip(), "64", "32") #first boot
 
 
 	#Start Websocket
-	Process(target=ws_client).start()
+	ws_client()

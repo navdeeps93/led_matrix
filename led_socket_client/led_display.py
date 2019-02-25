@@ -24,7 +24,7 @@ def screen_init():
 	matrix = RGBMatrix(options = options)
 
 def set_pixel(x, y, r, g, b):
-	matrix.SetPixel(x, y, 100, 144, 255)
+	matrix.SetPixel(x, y, r, g, b)
 
 
 
@@ -39,7 +39,7 @@ def display_image(image_file):
 	options.chain_length = 1
 	options.parallel = 1
 	options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafruit-hat'
-	options.brightness = 30
+	options.brightness = 100
 	options.show_refresh_rate=1
 	matrix = RGBMatrix(options = options)
 
